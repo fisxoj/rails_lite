@@ -85,7 +85,7 @@ describe Phase6::Router do
 
   describe "#run" do
     it "sets status to 404 if no route is found" do
-      subject.add_route(1, 2, 3, 4)
+      subject.add_route("/aardvark", 2, 3, 4)
       req.stub(:path) { "/users" }
       req.stub(:request_method) { :get }
       subject.run(req, res)
