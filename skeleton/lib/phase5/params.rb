@@ -1,4 +1,5 @@
 require 'uri'
+require 'active_support/core_ext/hash/indifferent_access'
 
 module Phase5
   class Params
@@ -8,13 +9,13 @@ module Phase5
     # 3. route params
     def initialize(req, route_params = {})
       @req = req
-      @params = route_params
+      @params = ActiveSupport::HashWithIndifferentAccess.new(route_params)
       parse_www_encoded_form(req.query_string) if req.query_string
       parse_www_encoded_form(req.body) if req.body
     end
 
     def [](key)
-      @params[key]
+      @params.with_indifferent_access[key]
     end
 
     def to_s
@@ -44,7 +45,7 @@ module Phase5
       if keys.count == 1
         ref.send(:[]=, keys.first, value)
       else
-        ref.send(:[]=, keys.first, Hash.new(nil))
+        ref.send(:[]=, keys.first, ActiveSupport::HashWithIndifferentAccess.new(nil))
         assign_nested(ref.send(:[], keys.first), keys[1..-1], value)
       end
     end

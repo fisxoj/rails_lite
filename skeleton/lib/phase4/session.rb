@@ -1,5 +1,6 @@
 require 'json'
 require 'webrick'
+require 'active_support/core_ext/hash/indifferent_access'
 
 module Phase4
   class Session
@@ -8,8 +9,17 @@ module Phase4
     # deserialize the cookie into a hash
     def initialize(req)
       @req = req
-      session_cookie = @req.cookies.find { |cookie| cookie.name == COOKIE_NAME}
-      @cookie = !!session_cookie ? JSON.parse(session_cookie.value) : nil
+
+      @cookie = ensure_cookie(req)
+    end
+
+    def ensure_cookie(req)
+      session_cookie = @req.cookies.find { |cookie| cookie.name == COOKIE_NAME }
+
+      if session_cookie && session_cookie.value && session_cookie.value != 'null'
+        return JSON.parse(session_cookie.value).with_indifferent_access
+      end
+      {}.with_indifferent_access
     end
 
     def [](key)
