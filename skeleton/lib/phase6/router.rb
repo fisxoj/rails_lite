@@ -16,12 +16,16 @@ module Phase6
     # instantiate controller and call controller action
     def run(req, res)
       if matches?(req)
-        puts "MATCHED"
-        params = Phase5::Params.new(req)
-        controller = controller_class.new(req, res, {})
 
-        controller.invoke_action(req.request_method)
+        controller = controller_class.new(req, res, params(req))
+
+        controller.invoke_action(action_name)
       end
+    end
+
+    def params(req)
+      params = pattern.match(req.path)
+      Hash[params.names.zip(params.captures)]
     end
   end
 
@@ -40,7 +44,7 @@ module Phase6
     # evaluate the proc in the context of the instance
     # for syntactic sugar :)
     def draw(&proc)
-      proc.call
+      self.instance_eval { proc.call }
     end
 
     # make each of these methods that

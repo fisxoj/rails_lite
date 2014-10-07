@@ -7,7 +7,8 @@ module Phase4
     # find the cookie for this app
     # deserialize the cookie into a hash
     def initialize(req)
-      session_cookie = req.cookies.find { |cookie| cookie.name == COOKIE_NAME}
+      @req = req
+      session_cookie = @req.cookies.find { |cookie| cookie.name == COOKIE_NAME}
       @cookie = !!session_cookie ? JSON.parse(session_cookie.value) : nil
     end
 
