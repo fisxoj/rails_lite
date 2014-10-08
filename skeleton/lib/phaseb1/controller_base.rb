@@ -2,7 +2,7 @@ require_relative '../phase6/controller_base'
 require_relative 'flash'
 
 module PhaseB1
-  class ControllerBase < Phase5::ControllerBase
+  class ControllerBase < Phase6::ControllerBase
     def redirect_to(url)
       session.store_session(res)
       flash.store_session(res)
