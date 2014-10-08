@@ -31,7 +31,7 @@ module Phase5
     # should return
     # { "user" => { "address" => { "street" => "main", "zip" => "89436" } } }
     def parse_www_encoded_form(www_encoded_form)
-      www_encoded_form.split('&').each do |let|
+      URI.unescape(www_encoded_form).split('&').each do |let|
 
         slot, value = let.split('=')
 
@@ -43,10 +43,10 @@ module Phase5
 
     def assign_nested(ref, keys, value)
       if keys.count == 1
-        ref.send(:[]=, keys.first, value)
+        ref[keys.first] = value
       else
-        ref.send(:[]=, keys.first, ActiveSupport::HashWithIndifferentAccess.new(nil))
-        assign_nested(ref.send(:[], keys.first), keys[1..-1], value)
+        ref[keys.first] ||= ActiveSupport::HashWithIndifferentAccess.new(nil)
+        assign_nested(ref[keys.first], keys[1..-1], value)
       end
     end
 
