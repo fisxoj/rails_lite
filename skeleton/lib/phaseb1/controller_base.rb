@@ -1,4 +1,5 @@
 require_relative '../phase6/controller_base'
+require_relative 'flash'
 
 module PhaseB1
   class ControllerBase < Phase5::ControllerBase
