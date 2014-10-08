@@ -13,8 +13,13 @@ module Phase4
       @cookie = ensure_cookie(req)
     end
 
+    def cookie_name
+      # class inheritance problem solved?
+      COOKIE_NAME
+    end
+
     def ensure_cookie(req)
-      session_cookie = @req.cookies.find { |cookie| cookie.name == COOKIE_NAME }
+      session_cookie = @req.cookies.find { |cookie| cookie.name == cookie_name }
 
       if session_cookie && session_cookie.value && session_cookie.value != 'null'
         return JSON.parse(session_cookie.value).with_indifferent_access
@@ -37,7 +42,9 @@ module Phase4
     # serialize the hash into json and save in a cookie
     # add to the responses cookies
     def store_session(res)
-      res.cookies << WEBrick::Cookie.new(COOKIE_NAME, @cookie.to_json)
+      unless cookie.empty?
+        res.cookies << WEBrick::Cookie.new(COOKIE_NAME, @cookie.to_json)
+      end
     end
   end
 end
